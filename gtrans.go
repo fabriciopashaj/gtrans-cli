@@ -247,6 +247,23 @@ func cmdTranslateFile(tr *TranslatorCLI, text string) {
 	}
 }
 
+func printHelp() {
+	fmt.Fprintln(os.Stderr, "| Get internal environment variable")
+	fmt.Fprintln(os.Stderr, "| > get envVar")
+	fmt.Fprintln(os.Stderr, "| Set internal environment variables in the form key=value")
+	fmt.Fprintln(os.Stderr, "| > set source=es target=en")
+	fmt.Fprintln(os.Stderr, "| Translate text after command from Env[\"source\"] to Env[\"target\"]")
+	fmt.Fprintln(os.Stderr, "| By default Env[\"source\"] = \"auto\"")
+	fmt.Fprintln(os.Stderr, "| > Krankenhaus")
+	fmt.Fprintln(os.Stderr, "| Translate text in file in path {source} and output to file in path {dest}")
+	fmt.Fprintln(os.Stderr, "| If {dest} is not an absolute path, it will be interpreted relative to the directory of {source}")
+	fmt.Fprintln(os.Stderr, "| > trf {source} {dest}")
+	fmt.Fprintln(os.Stderr, "| If {dest} is not provided translated text will be outputed to Stdout instead.")
+	fmt.Fprintln(os.Stderr, "| > trf {source}")
+	fmt.Fprintln(os.Stderr, "| Print this help message")
+	fmt.Fprintln(os.Stderr, "| > help")
+}
+
 func (tr *TranslatorCLI) Start() {
 	for {
 		line, err := tr.Reader.Readline()
@@ -265,10 +282,13 @@ func (tr *TranslatorCLI) Start() {
 			cmdTranslateText(tr, line[len("trt "):])
 		case strings.HasPrefix(line, "trf "):
 			cmdTranslateFile(tr, line[len("trf "):])
+		case strings.HasPrefix(line, "help"):
+			printHelp()
 		case line == "":
 			// nop
 		default:
-			fmt.Println("Invalid input, expected \"<cmd> [data...]\"")
+			fmt.Println("Invalid input")
+			printHelp()
 		}
 	}
 }
